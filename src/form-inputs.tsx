@@ -5,9 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TodoList, DeletedList, CompletedAction } from "./action";
 
 const FormInputs = () => {
-  const updateList = useSelector(
-    (state: any) => state?.TodoListReducer?.values
-  );
+  const updateList = useSelector((state: any) => state?.TodoListReducer?.values);
   const deleteValues = useSelector((state: any) => state?.TodoListReducer);
   const [deletedlist, setDeletedList] = React.useState<any>([]);
   const [completedlist, setCompletedList] = React.useState<any>([]);
@@ -42,7 +40,7 @@ const FormInputs = () => {
   const updateData = () => {
     const list = [...todoList];
     const indexValue = list.indexOf(updateList);
-    list[indexValue] = todoValues;
+    list[indexValue].value = todoValues;
     setTodoList(list);
     dispatch(TodoList(list));
     setTodoValues("");
