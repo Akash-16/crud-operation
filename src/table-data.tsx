@@ -2,7 +2,7 @@ import * as React from "react";
 import { DeleteList, updateActions } from "./action";
 import * as ReactRedux from "react-redux";
 
-const TableData = ({ deleteFunction, isEditFunction }: Props) => {
+const TableData = ({ deleteFunction, isEditFunction, completedFunction }: Props) => {
   const dispatch = ReactRedux.useDispatch();
   const todoList = ReactRedux.useSelector((state: any) => state?.TodoListReducer?.ListData);
   const [indexNumber, setIndexNumber] = React.useState(0);
@@ -12,24 +12,34 @@ const TableData = ({ deleteFunction, isEditFunction }: Props) => {
     updateId: 0,
   });
 
-  const deleteFunctions = (item: string, index: number) => {
+  const deleteFunctions = (item: any, index: number) => {
     deleteFunction(item, index);
     dispatch(DeleteList(item));
   };
 
+  const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>, data: string, position: number) => {
+    if(e.target.checked){
+      completeTodo(data)
+    }    
+  }
+
   const updateFunction = (item: any, index: number) => {
     setIndexNumber(index);
     dispatch(updateActions(item));
-    if (indexNumber === index) {
-      isEditFunction();
-    }
-
+    // if (indexNumber === index) {
+    //   isEditFunction();
+    // }
+    isEditFunction();
     setUpdateValues((prevData) => ({
       ...prevData,
       updateId: index,
       isUpdate: !updateValues.isUpdate,
     }));
   };
+
+  const completeTodo = (item: string) => {
+    completedFunction(item)
+  }
 
   return (
     <div style={{ marginTop: "10px" }}>
@@ -43,7 +53,8 @@ const TableData = ({ deleteFunction, isEditFunction }: Props) => {
               alignItems: "center",
             }}
           >
-            <div style={{ marginTop: "10px" }}>{item}</div>
+            <input type={'checkbox'} checked={item.isCompleted} value={item.value} onChange={(e)=>handleCheckboxChange(e,item, index)} style={{marginLeft:'10px'}} />
+            <div style={{ marginTop: "10px" }}>{item.value}</div>
             <div style={{ marginLeft: "10px" }}>
               <button
                 onClick={() => updateFunction(item, index)}
@@ -57,6 +68,12 @@ const TableData = ({ deleteFunction, isEditFunction }: Props) => {
               >
                 Delete
               </button>
+              {/* <button
+                onClick={() => completeTodo(item)}
+                style={{ fontSize: "16px", marginLeft: "10px" }}
+              >
+                Complete
+              </button> */}
             </div>
           </div>
         ))}
@@ -68,6 +85,7 @@ const TableData = ({ deleteFunction, isEditFunction }: Props) => {
 interface Props {
   deleteFunction: (item: string, index: number) => void;
   isEditFunction: () => void;
+  completedFunction: (item: string) => void
 }
 
 export default TableData;

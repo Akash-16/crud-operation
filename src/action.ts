@@ -1,5 +1,4 @@
 export const TodoList = (value: any) => {
-  // console.log(value)
   return {
     type: "TODO_LIST",
     value: value,
@@ -12,6 +11,20 @@ export const DeleteList = (value: string) => {
     payload: value,
   };
 };
+
+export const DeletedList = (value: any) => {
+  return {
+    type: "DELETED_LIST",
+    deletedList:value
+  }
+}
+
+export const CompletedAction = (value: any) => {
+  return {
+    type: "COMPLETED_LIST",
+    completedList:value
+  }
+}
 
 export const updateActions = (value: any) => {
   return {
