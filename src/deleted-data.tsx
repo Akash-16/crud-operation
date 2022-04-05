@@ -5,11 +5,9 @@ const DeletedData = ({ undoFuntion }: Props) => {
   const deletedList = ReactRedux.useSelector((state: any) => state?.TodoListReducer?.deletedList);
   const completedList = ReactRedux.useSelector((state: any) => state?.TodoListReducer?.completedList);
 
-  const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>, data: string, position: number) => {
-    if(e.target.checked){
-      // completeTodo(data)
-      undoFuntion('completed',data);
-    }    
+  const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>, data: any, position: number) => {
+    console.log('delete onchange',data);
+    undoFuntion('completed',data);   
   }
 
   return (

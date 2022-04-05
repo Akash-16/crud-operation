@@ -62,9 +62,11 @@ const FormInputs = () => {
     } else {
       const list = [...todoList];
       const completed = [...completedlist];
+      const samObj = {...item, isCompleted: false};
+      console.log(samObj);
       completed.splice(completed.indexOf(item), 1);
       setCompletedList(completed);
-      list.push(item);
+      list.push(samObj);
       setTodoList(list);
       dispatch(TodoList(list));
       dispatch(CompletedAction(completed));
@@ -75,7 +77,7 @@ const FormInputs = () => {
     const list = [...todoList];
     const completedValues = [...completedlist];
     if (!completedValues.includes(item)) {
-      completedValues.push(item);
+      completedValues.push({...item, isCompleted: true});
       setCompletedList(completedValues);
     }
     list.splice(list.indexOf(item), 1);
