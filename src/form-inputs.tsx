@@ -3,6 +3,7 @@ import TableData from "./table-data";
 import DeletedData from "./deleted-data";
 import { useDispatch, useSelector } from "react-redux";
 import { TodoList, DeletedList, CompletedAction } from "./action";
+import { getUser, getAllpost } from './sliceMethod'
 
 const FormInputs = () => {
   const updateList = useSelector((state: any) => state?.TodoListReducer?.values);
@@ -11,6 +12,7 @@ const FormInputs = () => {
   const [completedlist, setCompletedList] = React.useState<any>([]);
   const [todoValues, setTodoValues] = React.useState<string>("");
   const [todoList, setTodoList] = React.useState<any>([]);
+  const [openList, setOpenList] = React.useState<boolean>(false)
   const [isEdit, setisEdit] = React.useState<boolean>(false);
   const dispatch = useDispatch();
 
@@ -22,8 +24,9 @@ const FormInputs = () => {
       isCompleted: false,
     });
     setTodoList(list);
-    dispatch(TodoList(list));
+    dispatch(getUser(list));
     setTodoValues("");
+    setOpenList(false)
   };
 
   const deletData = (data: any, index: number) => {
@@ -60,7 +63,7 @@ const FormInputs = () => {
     } else {
       const list = [...todoList];
       const completed = [...completedlist];
-      const samObj = {...item, isCompleted: false};
+      const samObj = { ...item, isCompleted: false };
       console.log(samObj);
       completed.splice(completed.indexOf(item), 1);
       setCompletedList(completed);
@@ -75,7 +78,7 @@ const FormInputs = () => {
     const list = [...todoList];
     const completedValues = [...completedlist];
     if (!completedValues.includes(item)) {
-      completedValues.push({...item, isCompleted: true});
+      completedValues.push({ ...item, isCompleted: true });
       setCompletedList(completedValues);
     }
     list.splice(list.indexOf(item), 1);
@@ -84,41 +87,67 @@ const FormInputs = () => {
     dispatch(CompletedAction(completedValues));
   };
 
+  const sampleApiData = async () => {
+    const data = await fetch('https://jsonplaceholder.typicode.com/posts').then((res) => res.json()).then((data) => data?.splice(0, 10));
+    dispatch(getAllpost(data))
+  }
+
+  const addDatas = () => {
+    setOpenList(true)
+  }
+
   React.useEffect(() => {
     if (updateList) {
       setTodoValues(updateList?.value);
     }
+    sampleApiData();
   }, [updateList]);
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <input
-          value={todoValues}
-          onChange={(e) => setTodoValues(e.target.value)}
-          placeholder="Enter your list"
-        />
-        {!isEdit ? (
-          <button
-            onClick={createList}
-            style={{ marginLeft: "10px", fontSize: "19px" }}
-          >
-            Create
-          </button>
-        ) : (
-          <button
-            onClick={updateData}
-            style={{ marginLeft: "10px", fontSize: "19px" }}
-          >
-            Update
-          </button>
-        )}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {openList && (
+            <input
+              value={todoValues}
+              onChange={(e) => setTodoValues(e.target.value)}
+              placeholder="Enter your list"
+            />
+          )}
+
+          {openList && (
+            <div>
+              {!isEdit ? (
+                <button
+                  onClick={createList}
+                  style={{ marginLeft: "10px", fontSize: "19px" }}
+                >
+                  Create
+                </button>
+              ) : (
+                <button
+                  onClick={updateData}
+                  style={{ marginLeft: "10px", fontSize: "19px" }}
+                >
+                  Update
+                </button>
+              )}
+            </div>
+          )}
+
+        </div>
+        <div>
+          <button onClick={addDatas} style={{ marginLeft: "10px", fontSize: "19px" }}>Add</button>
+        </div>
       </div>
-      <TableData
-        completedFunction={(item: string) => completedList(item)}
-        isEditFunction={() => setisEdit(true)}
-        deleteFunction={(data, index) => deletData(data, index)}
-      />
+      {!openList && (
+        <TableData
+          completedFunction={(item: string) => completedList(item)}
+          isEditFunction={() => setisEdit(true)}
+          deleteFunction={(data, index) => deletData(data, index)}
+        />
+      )}
+
       <DeletedData
         undoFuntion={(type: string, item: any) => undoList(type, item)}
       />

@@ -1,11 +1,16 @@
 import * as React from "react";
 import { DeleteList, updateActions } from "./action";
 import * as ReactRedux from "react-redux";
+import { allPost, getAluser } from './sliceMethod'
 
 const TableData = ({ deleteFunction, isEditFunction, completedFunction }: Props) => {
   const dispatch = ReactRedux.useDispatch();
   const todoList = ReactRedux.useSelector((state: any) => state?.TodoListReducer?.ListData);
+  const allData = ReactRedux.useSelector(allPost);
+  const datas = ReactRedux.useSelector(getAluser)
   const [indexNumber, setIndexNumber] = React.useState(0);
+
+  console.log(allData)
 
   const [updateValues, setUpdateValues] = React.useState({
     isUpdate: false,
@@ -43,8 +48,17 @@ const TableData = ({ deleteFunction, isEditFunction, completedFunction }: Props)
 
   return (
     <div style={{ marginTop: "10px" }}>
+      {/* <div>
+        {allData?.map((item: any, index: number)=>(
+          <div>
+            <div>{item?.id}</div>
+            <div>{item?.title}</div>
+            <div>{item?.body}</div>
+          </div>
+        ))}
+      </div> */}
       <div>
-        {todoList?.map((item: any, index: number) => (
+        {datas?.map((item: any, index: number) => (
           <div
             key={index}
             style={{
